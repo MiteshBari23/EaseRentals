@@ -15,7 +15,11 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-let generatedOtp = null
+let generatedOtp = null;
+
+function generateBookingNumber() {
+  return Math.floor(100000 + Math.random() * 900000).toString(); // Generates a 6-digit booking number
+}
 
 // Function to send OTP via email
 async function sendOtpEmail(toEmail, otp) {
@@ -94,17 +98,21 @@ async function sendOtpEmail(toEmail, otp) {
 async function generateAndSendOtp(email) {
   // console.log("this is from the nodeMailer file "+email)
   // return;
-  
+
   // const { email } = req.body;
 
   if (!email) {
-    console.log("email not found and wont send otp")
-    return
+    console.log("email not found and wont send otp");
+    return;
     // return res.status(400).json({ error: "Email is required." });
   }
 
   // // Generate a 6-digit OTP (you can adjust the length if needed)
-  const otp = otpGenerator.generate(6, { lowerCaseAlphabets: false, upperCaseAlphabets: false, specialChars: false });
+  const otp = otpGenerator.generate(6, {
+    lowerCaseAlphabets: false,
+    upperCaseAlphabets: false,
+    specialChars: false,
+  });
   generatedOtp = otp;
   // // Call the function to send OTP via email
   try {
@@ -127,6 +135,135 @@ async function verifyOtp(userOtp, res) {
     return res.status(400).json({ message: "Invalid OTP!" });
   }
 }
+// const toEmail = "varunvisave@gmail.com";
+// const username = "varun";
+// const mobile = "1234567890";
+// const bookingDate = "02-11-2004";
+async function sendBookingConfirmationEmail(toEmail, username, mobile, bookingDate) {
+// async function sendBookingConfirmationEmail() {
+  const bookingNumber = generateBookingNumber();
+  const info = await transporter.sendMail({
+    from: '"Booking Confirmation" <AutoMail.02.11.04@gmail.com>',
+    to: toEmail,
+    // to: toEmail,
+    subject: "Booking Confirmation",
+    html: ` 
+      <html>
+      <head>
+        <style>
+          body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 0;
+            color: #333;
+          }
+          .container {
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            text-align: center;
+          }
+          .header {
+            background-color: #4CAF50;
+            padding: 15px;
+            border-radius: 8px 8px 0 0;
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+          }
+          .content {
+            padding: 20px;
+          }
+          .highlight {
+            font-size: 20px;
+            color: #ffffff;
+            font-weight: bold;
+          }
+          .user-details {
+            font-size: 18px;
+            color: #333;
+            margin: 20px 0;
+          }
+          .user-details span {
+            font-weight: bold;
+          }
+          .dynamic-section {
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+          }
+          .footer {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #555;
+          }
+          .cta-btn {
+            display: inline-block;
+            padding: 12px 24px;
+            background: #22c1c3;  /* fallback for old browsers */
+            background: -webkit-linear-gradient(to right, #fdbb2d, #22c1c3);  /* Chrome 10-25, Safari 5.1-6 */
+            background: linear-gradient(to right, #fdbb2d, #22c1c3); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 
 
-module.exports = { generateAndSendOtp, verifyOtp };
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 20px;
+            font-size: 16px;
+          }
+          .thanks-message {
+            font-size: 18px;
+            color: #4CAF50;
+            margin-top: 10px;
+            font-weight: bold;
+          }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <div class="header">Booking Confirmed! 🎉</div>
+          <div class="content">
+            <p class="highlight">Hooray, <strong>${username}</strong>! Your booking is officially reserved.</p>
+            <p>We are thrilled to have you on board. You’ve successfully booked your seat for the selected date. Here are your booking details:</p>
+
+            <div class="dynamic-section">
+              <div class="user-details">
+                <p><strong>🔢 Booking Number:</strong> ${bookingNumber}</p>
+                <p><span>📞 Mobile Number:</span> ${mobile}</p>
+                <p><span>📅 Booking Date:</span> ${bookingDate}</p>
+              </div>
+            </div>
+
+            <p>We’ll make sure everything is set for your visit! You’ll receive an email with the cost estimates and further instructions soon.</p>
+            <p>If you have any questions or need to make changes to your booking, feel free to contact us. We’re always here to help!</p>
+
+            <a href="https://easerentals.onrender.com" class="cta-btn">View Your Booking Details</a>
+
+            <div class="thanks-message">Thank you for choosing us!</div>
+          </div>
+
+          <div class="footer">
+            <p>Stay excited, <strong>${username}</strong>! We look forward to serving you.</p>
+            <p>Best Regards,<br><strong>EaseRentals</strong></p>
+          </div>
+        </div>
+      </body>
+      </html>
+    `,
+  });
+
+  console.log("Booking confirmation email sent: %s", info.messageId);
+}
+
+// sendBookingConfirmationEmail();
+
+module.exports = {
+  generateAndSendOtp,
+  verifyOtp,
+  sendBookingConfirmationEmail,
+};

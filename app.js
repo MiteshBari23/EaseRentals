@@ -19,6 +19,7 @@ const flash = require("connect-flash");
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
 const User = require("./models/user.js");
+const bodyParser = require('body-parser');
 
 //router objects;
 const listings = require("./routes/listing.js");
@@ -27,6 +28,7 @@ const { isLoggedIn, isReviewAuthor } = require("./middleware.js");
 const {
   generateAndSendOtp,
   verifyOtp,
+  sendBookingConfirmationEmail,
 } = require("./MailService/nodeMailer.js");
 // const review = require("./routes/review.js");
 // const user = require("./routes/user.js");
@@ -52,7 +54,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
 app.engine("ejs", ejsMate);
 app.use(express.static(path.join(__dirname, "/public")));
-
+app.use(bodyParser.urlencoded({ extended: true }));
 //mongo store
 const store = MongoStore.create({
   mongoUrl: dbURL,
@@ -238,7 +240,24 @@ app.post(
   "/buy",
   isLoggedIn,
   wrapAsync(async (req, res) => {
+    console.log("rent this listing button clicked")
     res.render("listings/buy.ejs");
+  })
+);
+app.post(
+  "/booked",
+  isLoggedIn,
+  wrapAsync(async (req, res) => {
+    const email = req.body.buyer.email;
+    const name = req.body.buyer.name;
+    const phone = req.body.buyer.phone;
+    const bookingDate = req.body.booking.date;
+
+    sendBookingConfirmationEmail(email, name, phone, bookingDate);
+  
+    // Now you can use this data, e.g., save it to the database or render a response
+    console.log(`Email: ${email}, Name: ${name}, Phone: ${phone}, Booking Date: ${bookingDate}`);
+    res.render("listings/booked.ejs");
   })
 );
 

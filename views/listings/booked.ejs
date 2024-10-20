@@ -1,0 +1,95 @@
+<% layout("/layouts/boilerplate") %>
+
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card border-success shadow-lg">
+        <div class="card-header bg-success text-white text-center">
+          <h2>Booking in Progress...</h2>
+        </div>
+        <div class="card-body bg-white text-center">
+          
+          <!-- Booking Animation -->
+          <div class="booking-animation">
+            <p class="lead">Please wait while we confirm your seat...</p>
+            <div class="spinner-border text-success" role="status">
+              <span class="sr-only">Loading...</span>
+            </div>
+          </div>
+          
+          <!-- Progress Bar for Visual Indication -->
+          <div class="progress mt-4">
+            <div
+              class="progress-bar progress-bar-striped progress-bar-animated bg-success"
+              role="progressbar"
+              style="width: 75%;"
+              aria-valuenow="75"
+              aria-valuemin="0"
+              aria-valuemax="100"
+            >
+              Finalizing Booking...
+            </div>
+          </div>
+
+          <!-- Placeholder for delayed animation (e.g. waiting for backend response) -->
+          <div id="bookingComplete" class="mt-5" style="display: none;">
+            <h3 class="text-success">Success! Your seat has been booked.</h3>
+            <p class="lead">Please check your email for booking estimates and details.</p>
+            <a href="/" class="btn btn-success mt-3">Return to Home</a>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- JavaScript to simulate booking animation and completion -->
+<script>
+  // Simulating the booking process with a delay
+  setTimeout(() => {
+    // Hide animation and show success message
+    document.querySelector('.booking-animation').style.display = 'none';
+    document.querySelector('.progress').style.display = 'none';
+    document.getElementById('bookingComplete').style.display = 'block';
+  }, 5000); // Adjust delay to simulate backend processing time (in milliseconds)
+</script>
+
+<!-- Additional styling for smooth animation and success display -->
+<style>
+  .container {
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+  .card {
+    border-radius: 15px;
+    padding: 20px;
+  }
+  .card-header {
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    padding: 15px;
+  }
+  .progress-bar {
+    font-size: 16px;
+    font-weight: bold;
+  }
+  .spinner-border {
+    width: 3rem;
+    height: 3rem;
+  }
+  #bookingComplete h3 {
+    font-size: 24px;
+  }
+  #bookingComplete p {
+    font-size: 18px;
+  }
+  .btn-success {
+    background-color: #28a745;
+    border-color: #28a745;
+  }
+  .btn-success:hover {
+    background-color: #218838;
+    border-color: #218838;
+  }
+</style>
