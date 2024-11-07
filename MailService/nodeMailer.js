@@ -229,7 +229,7 @@ async function sendBookingConfirmationEmail(toEmail, username, mobile, bookingDa
           <div class="header">Booking Confirmed! 🎉</div>
           <div class="content">
             <p class="highlight">Hooray, <strong>${username}</strong>! Your booking is officially reserved.</p>
-            <p>We are thrilled to have you on board. You’ve successfully booked your seat for the selected date. Here are your booking details:</p>
+            <p>We are thrilled to have you on board. You’ve successfully booked your room for the selected date. Here are your booking details:</p>
 
             <div class="dynamic-section">
               <div class="user-details">

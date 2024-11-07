@@ -14,7 +14,7 @@ const model = genAI.getGenerativeModel({
   generationConfig: {
     candidateCount: 1,
     stopSequences: [""],
-    maxOutputTokens: 120,
+    maxOutputTokens: 700,
     temperature: 0.8,
   },
 });
